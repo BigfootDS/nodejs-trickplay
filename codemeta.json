@@ -3,15 +3,15 @@
     "type": "software",
     "author": [
         {
-            "id": "https://orcid.org/0009-0008-2183-7041",
-            "type": "Person",
-            "affiliation": {
-                "type": "Organization",
-                "name": "BigfootDS"
-            },
+            "@id": "https://orcid.org/0009-0008-2183-7041",
+            "@type": "Person",
             "email": "alex@bigfootds.com",
+            "givenName": "Alex",
             "familyName": "Stormwood",
-            "givenName": "Alex"
+            "affiliation": {
+                "@type":"Organization",
+                "name":"BigfootDS"
+            }
         }
     ],
     "codeRepository": "https://github.com/BigfootDS/nodejs-trickplay",
