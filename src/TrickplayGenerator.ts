@@ -17,7 +17,11 @@ export type TrickplayGeneratorOptions = {
 	trickplaySheetRows?: number;
 	trickplaySheetColumns?: number;
 	skipIndividualFrameGeneration?: boolean;
+	individualFrameFileFormat?: string;
+	tilesheetFileFormat?: string;
 }
+
+
 
 export async function generateTrickplay(targetVideoPath: string, options: TrickplayGeneratorOptions = {}){
 
@@ -59,12 +63,15 @@ export async function generateTrickplay(targetVideoPath: string, options: Trickp
 		trickplayOutputDir: options.trickplayOutputDir || targetVideoPath.slice(0, targetVideoPath.indexOf(targetVideoFilename)) + targetVideoFilename.slice(0, targetVideoFilename.lastIndexOf(".")) + ".trickplay",
 		secondsBetweenFrames: options.secondsBetweenFrames || 10,
 		numberOfFramesToGrab: Math.floor(videoMetadata.format.duration / (options.secondsBetweenFrames || 10)),
-		frameTimestamps: options.frameTimestamps,
+		frameTimestamps: options.frameTimestamps || [],
 		trickplayImageWidth: options.trickplayImageWidth || 320,
 		trickplaySheetRows: options.trickplaySheetRows || 10,
 		trickplaySheetColumns: options.trickplaySheetColumns || 10,
-		skipIndividualFrameGeneration: options.skipIndividualFrameGeneration || false
+		skipIndividualFrameGeneration: options.skipIndividualFrameGeneration || false,
+		individualFrameFileFormat: options.individualFrameFileFormat || "jpg",
+		tilesheetFileFormat: options.tilesheetFileFormat || "jpg"
 	};
+	
 
 	localOptions.frameTimestamps = new Array(Math.floor(localOptions.numberOfFramesToGrab)).fill(0).map((_, index) => {
 		return (index * localOptions.secondsBetweenFrames).toString();
@@ -76,12 +83,20 @@ export async function generateTrickplay(targetVideoPath: string, options: Trickp
 
 	//#region Generate the trickplay images
 	if (!localOptions.skipIndividualFrameGeneration){
+
+		// Make sure raw frames directory exists
+		let rawFramesDirectory = path.resolve(localOptions.trickplayOutputDir,"frames");
+		if (!fs.existsSync(rawFramesDirectory)){
+			console.log("Making raw frames directory at:\n" + rawFramesDirectory);
+			fs.mkdirSync(rawFramesDirectory, {recursive: true});
+		}
+
 		let createdTrickplayImagePaths: string[] = [];
 		let screenshotOptions = {
 			count: localOptions.frameTimestamps!.length,
 			timemarks: localOptions.frameTimestamps,
 			size: localOptions.trickplayImageWidth +"x?",
-			filename: "%i.png"
+			filename: "%i." + localOptions.individualFrameFileFormat
 		};
 		console.log("---");
 		console.log(JSON.stringify(screenshotOptions, null, 4));
@@ -124,7 +139,10 @@ export async function generateTrickplay(targetVideoPath: string, options: Trickp
 
 	fs.readdirSync(rawFramesDirectory, {withFileTypes: true}).forEach((foundFile) => {
 		if (foundFile.isFile()){
-			individualFramePaths.push(foundFile.name)
+			let foundFileExtension = foundFile.name.slice(foundFile.name.lastIndexOf(".") + 1);
+			if (foundFileExtension.toLocaleLowerCase() == localOptions.individualFrameFileFormat.toLocaleLowerCase()){
+				individualFramePaths.push(foundFile.name)
+			}
 		}
 	});
 
@@ -144,7 +162,7 @@ export async function generateTrickplay(targetVideoPath: string, options: Trickp
 	console.log(framePaths2dGrid.length);
 	let tilesheetCount = Math.ceil(framePaths2dGrid.length / localOptions.trickplaySheetRows);
 	console.log(tilesheetCount);
-	// return;
+
 	let sampleFrame = await Jimp.read(path.resolve(rawFramesDirectory, framePaths2dGrid[0][0]));
 
 	let tilesheets = [];
@@ -156,13 +174,6 @@ export async function generateTrickplay(targetVideoPath: string, options: Trickp
 			color: "0xffffffff"
 		}));
 	}
-
-
-	// let tilesheet = new Jimp({
-	// 	width: localOptions.trickplayImageWidth * localOptions.trickplaySheetColumns,
-	// 	height: sampleFrame.height * localOptions.trickplaySheetRows,
-	// 	color: "0xffffffff"
-	// });
 
 	console.log(`Tilesheet dimensions:\nwidth:${tilesheets[0].width}\nheight:${tilesheets[0].height}`);
 
@@ -193,7 +204,7 @@ export async function generateTrickplay(targetVideoPath: string, options: Trickp
 
 
 	tilesheets.forEach(async (tilesheet, index) => {
-		await tilesheet.write(`${tilesheetDirectory}/${index}.png`);
+		await tilesheet.write(`${tilesheetDirectory}/${index}.${localOptions.tilesheetFileFormat}`);
 	})
 
 	//#endregion
