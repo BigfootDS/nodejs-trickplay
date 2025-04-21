@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: NodeJS Trickplay
+authors:
+abstract: Generate trickplay images for a given video file, for usage in NodeJS environments.
+repository-code: "https://github.com/BigfootDS/nodejs-trickplay"
+version: 1.0.0
+license-url: "https://spdx.org/licenses/MIT"
+keywords:
+  - nodejs
+  - npm
+  - npm-package
+  - video-processing
+  - video processing
+  - npm package
+  - video preview
+  - video-preview
+  - trickplay
+  - video scrubbing
+  - video-scrubbing
+  - video preview thumbnails
+  - vide-preview-thumbnails
+date-released: 2025-04-21
