@@ -1,6 +1,6 @@
 {
   "name": "@bigfootds/nodejs-trickplay",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Generate trickplay images for a given video file, for usage in NodeJS environments.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

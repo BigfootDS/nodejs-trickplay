@@ -6,7 +6,11 @@ Basically just recreating the Jellyfin approach to trickplay, via NodeJS.
 
 ## Installation
 
-TBD
+This is a scoped package, to the `@bigfootds` namespace. Your installation command should look something like this:
+
+`npm install @bigfootds/nodejs-trickplay`
+
+The dependencies of this package should automatically sort out the `ffmpeg` and `ffprobe` installations for your operating systems.
 
 ## Usage
 
