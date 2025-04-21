@@ -1,3 +1,2 @@
-import { generateTrickplay } from "./TrickplayGenerator";
+export { generateTrickplay, TrickplayGeneratorOptions } from "./TrickplayGenerator";
 
-export default generateTrickplay;
