@@ -18,7 +18,17 @@
     "type": "git",
     "url": "git+https://github.com/BigfootDS/nodejs-trickplay.git"
   },
-  "keywords": [],
+  "keywords": [
+    "trickplay",
+    "video-scrubbing",
+    "video-processing",
+    "video-preview",
+    "video-preview-thumbnails",
+    "video scrubbing",
+    "video processing",
+    "video preview",
+    "video preview thumbnails"
+  ],
   "author": {
     "name": "Alex Stormwood",
     "email": "alex@bigfootds.com",
